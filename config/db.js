@@ -7,7 +7,7 @@ const connectDB = async () => {
     {
         // wait for promise to return value
         await mongoose.connect(db, {useNewUrlParser:true, useUnifiedTopology: true });
-
+        
         // print to console that db is connected
         console.log("mongoDB successfully connected");
     }
@@ -19,6 +19,6 @@ const connectDB = async () => {
         // exit process with failure
         process.exit(1);
     }
-}
+};
 
 module.exports = connectDB;
