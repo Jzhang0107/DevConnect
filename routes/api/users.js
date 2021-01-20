@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
-const {check, validationResult} = require('express-validator/check');
+const {check, validationResult} = require('express-validator');
 
 // models import
 const User = require('../../models/User');
@@ -32,13 +32,17 @@ async (req, res) => {
 
     try
     {
-        const user = User.findOne({email: email});
+        console.log(email);
+
+        let user = await User.findOne({ email: email });
+
+        console.log(user);
 
         // see if user exists
         // if user email found in db, then that means email has already been used
         if(user)
         {
-            res.status(400).json({ errors: [{msg: 'User already exists'}] });
+            return res.status(400).json({ errors: [{msg: 'User already exists'}] });
         }
 
         // get user gravatar
@@ -49,16 +53,21 @@ async (req, res) => {
         })
 
         user = new User({
-            name,
-            email,
-            password,
-            avatar,
+            name: name,
+            email: email,
+            avatar: avatar,
+            password: password
         })
 
-
         // encrypt password
+        const salt = await bcrypt.genSalt(10);
+
+        user.password = await bcrypt.hash(password, salt);
+
+        await user.save();
 
         // return jwt
+        
 
         // Request made without error
         res.send('User created successfully');
