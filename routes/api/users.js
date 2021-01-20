@@ -32,11 +32,7 @@ async (req, res) => {
 
     try
     {
-        console.log(email);
-
-        let user = await User.findOne({ email: email });
-
-        console.log(user);
+        let user = await User.findOne({ email: email }).exec();
 
         // see if user exists
         // if user email found in db, then that means email has already been used
