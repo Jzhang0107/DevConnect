@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../../middleware/auth');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
@@ -13,7 +12,6 @@ const User = require('../../models/User');
 // @desc - Authenticate user and get token
 // @access - public, no token needed
 router.post(('/'), [
-
     // params('field name', 'error message or default used')
     check('email', 'Please enter a valid email').isEmail(),
     check('password', 'Please enter a password').exists()
@@ -34,7 +32,7 @@ async (req, res) => {
     try
     {
         // checks to see if db has a user with the email that the user entered
-        let user = await User.findOne({ email: email }).exec();
+        let user = await User.findOne({ email: email });
 
         // see if user exists based on email
         if(!user)
@@ -48,7 +46,6 @@ async (req, res) => {
         if(!isMatch)
         {
             // should make error messages same as above if you want added security so user doesn't know what is incorrect
-            // ie no user found or credentials are wrong
             return res.status(400).json({ errors: [{msg: 'Username or password is incorrect'}] });
         }
 
@@ -60,6 +57,7 @@ async (req, res) => {
             }
         }
 
+        // this returns the token we will need to access private info
         jwt.sign(
             payload, 
             jwtSecret, 
@@ -70,7 +68,7 @@ async (req, res) => {
                     throw err;
                 }
 
-                // sign-up successful
+                // login successful, returns authorization token
                 res.json({ token });
             });
     }

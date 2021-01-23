@@ -37,10 +37,10 @@ async (req, res) => {
     {
         let user = await User.findOne({ email: email }).exec();
 
-        // see if user exists
-        // if user email found in db, then that means email has already been used
+        // see if user exists in db
         if(user)
         {
+            // return error message if email in db
             return res.status(400).json({ errors: [{msg: 'User already exists'}] });
         }
 
@@ -58,20 +58,23 @@ async (req, res) => {
             password: password
         })
 
-        // encrypt password
+        // encrypt password and save data in db
         const salt = await bcrypt.genSalt(10);
 
         user.password = await bcrypt.hash(password, salt);
 
         await user.save();
 
-        // return jwt
+        // set the payload to be sent
+        // instead of sending the whole user, only send the id of the user
+        // rest of info is still stored in db but not 
         const payload = {
             user: {
                 id: user.id
             }
         }
 
+        // this returns the token we will need to access private info
         jwt.sign(
             payload, 
             jwtSecret, 
@@ -82,7 +85,7 @@ async (req, res) => {
                     throw err;
                 }
 
-                // sign-up successful
+                // sign-up successful, returns authorization token
                 res.json({ token });
             });
     }
