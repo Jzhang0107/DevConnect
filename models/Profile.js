@@ -25,7 +25,7 @@ const ProfileSchema = mongoose.Schema({
     bio: {
         type: String
     },
-    githubUsername: {
+    githubusername: {
         type: String
     },
     expiernece: [

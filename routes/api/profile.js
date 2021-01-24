@@ -49,14 +49,13 @@ router.post(('/'), [
     }
 
     const profileFields = {};
-    profileFields.user = req.user.id;
 
     const {
         company, 
         website, 
         location, 
         bio, 
-        githubUsername, 
+        githubusername, 
         status,
         skills, 
         youtube,
@@ -66,28 +65,56 @@ router.post(('/'), [
         linkedin
     } = req.body;
 
+    // got this from the authenticateuser middleware
+    profileFields.user = req.user.id;
+
+    // rest of fields not in middleware, will need to check req.body for it
+    // build the profileFields object and fill with base info
     if(company) profileFields.company = company;
     if(website) profileFields.website = website;
     if(location) profileFields.location = location;
     if(bio) profileFields.bio = bio;
-    if(githubUsername) profileFields.githubUsername = githubUsername;
+    if(githubusername) profileFields.githubusername = githubusername;
     
+    // dont need to check since these are required
     profileFields.status = status;
     profileFields.skills = skills.split(',').map(skill => skill.trim());
 
-    console.log(profileFields.skills);
+    // build and fill the profileFields.social obj 
+    profileFields.social = {};
+    if(youtube) profileFields.social.youtube = youtube;
+    if(twitter) profileFields.social.twitter = twitter;
+    if(facebook) profileFields.social.facebook = facebook;
+    if(linkedin) profileFields.social.linkedin = linkedin;
+    if(instagram) profileFields.social.instagram = instagram;
 
-    res.send('Set up profile fields')
+    try
+    {
+        let profile = await Profile.findOne({ user: req.user.id });
 
-    // try
-    // {
+        // if profile found, we update
+        if(profile)
+        {
+            profile = await Profile.findOneAndUpdate(
+                {user: req.user.id},
+                {$set: profileFields},
+                {new: true}
+            )
+            return res.json(profile);
+        }
 
-    // }
-    // catch(err)
-    // {
-    //     console.error(err.message);
-    //     res.status(500).send("Server error");
-    // }
+        // profile not found, we make a new one
+        profile = new Profile(profileFields);
+
+        await profile.save();
+
+        return res.json(profile);
+    }
+    catch(err)
+    {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
 });
 
 module.exports = router;
