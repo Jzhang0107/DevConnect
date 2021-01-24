@@ -35,7 +35,7 @@ async (req, res) => {
 
     try
     {
-        let user = await User.findOne({ email: email }).exec();
+        let user = await User.findOne({ email: email });
 
         // see if user exists in db
         if(user)
