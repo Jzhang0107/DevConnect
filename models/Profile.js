@@ -28,64 +28,66 @@ const ProfileSchema = mongoose.Schema({
     githubUsername: {
         type: String
     },
-    expiernece: {
-        title: {
-            type: String,
-            required: true
-        },
-        company: {
-            type: String,
-            required: true
-        },
-        position: {
-            type: String,
-            required: true
-        },
-        from: {
-            type: Date,
-            required: true
-        },
-        to: {
-            type: Date
-        },
-        current: {
-            type: Boolean,
-            default: false
-        },
-        description: {
-            type: String,
-            required: true
+    expiernece: [
+        {
+            title: {
+                type: String,
+                required: true
+            },
+            company: {
+                type: String,
+                required: true
+            },
+            position: {
+                type: String,
+                required: true
+            },
+            from: {
+                type: Date,
+                required: true
+            },
+            to: {
+                type: Date
+            },
+            current: {
+                type: Boolean,
+                default: false
+            },
+            description: {
+                type: String
+            }
         }
-    },
-    expiernece: {
-        school: {
-            type: String,
-            required: true
-        },
-        degree: {
-            type: String,
-            required: true
-        },
-        major: {
-            type: String,
-            required: true
-        },
-        from: {
-            type: Date,
-            required: true
-        },
-        to: {
-            type: Date
-        },
-        current: {
-            type: Boolean,
-            default: false
-        },
-        description: {
-            type: String,
-            required: true
+    ],
+    education: [
+        {
+            school: {
+                type: String,
+                required: true
+            },
+            degree: {
+                type: String,
+                required: true
+            },
+            major: {
+                type: String,
+                required: true
+            },
+            from: {
+                type: Date,
+                required: true
+            },
+            to: {
+                type: Date
+            },
+            current: {
+                type: Boolean,
+                default: false
+            },
+            description: {
+                type: String
+            }
         }
-    },
+    ],
     social: {
         youtube: {
             type: String
